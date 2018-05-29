@@ -1,11 +1,12 @@
 // @ts-check
-// require('dotenv').config()
 const client = require("cheerio-httpcli")
 const inquirer = require("inquirer")
 
 let logged = false
 let user = ""
 let contest = null
+
+// console.clear = () => {}
 
 main()
 
@@ -31,15 +32,6 @@ async function main() {
     await acts[choices.indexOf(answer.operation)]()
   }
 }
-
-// async function autoLogin(client) {
-//   const {USERNAME : username, PASSWORD : password} = process.env;
-//   if(username && password) {
-//     await login(client, username, password)
-//     if(logged) console.log("suceeded in auto-logging in as " + user)
-//     else console.log("though there's an auto-login settings, failed to login")
-//   }
-// }
 
 function collect(client) {
   const choices = [], acts = []
@@ -73,24 +65,25 @@ function collect(client) {
   if (!contest) {
     choices.push("enter contest")
     acts.push(async () => {
-      const confirm = await inquirer.prompt({
-        type : "confirm",
-        name : "confirm",
-        default : false,
-        message : "really?"
-      })
-      if (confirm) {
-        ({ contest } = await inquirer.prompt({
-          type: "input",
-          name: "contest",
-          message: "contest",
-        }))
-      }
+      ({ contest } = await inquirer.prompt({
+        type: "input",
+        name: "contest",
+        message: "contest",
+      }))
     })
   } else {
     choices.push("exit contest")
-    acts.push(() => {
-      contest = null
+    acts.push(async () => {
+      const { confirm } = await inquirer.prompt({
+        type: "confirm",
+        name: "confirm",
+        default: false,
+        message: "really?"
+      })
+      if (confirm) {
+        contest = null
+      }
+      console.clear()
     })
   }
 
@@ -139,7 +132,7 @@ async function logout(client) {
  */
 async function isLogged(client) {
   var { $, body, response } = await client.fetch("https://beta.atcoder.jp/")
-  let form = $("form[action='/login']")
+  let form = $("a[href='/login']")
   return !form.length
 }
 

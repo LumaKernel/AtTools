@@ -12,6 +12,7 @@
     "cheerio-httpcli": "^0.7.3",
     "dotenv": "^5.0.1",
     "inquirer": "^5.2.0",
+    "moment": "^2.22.1",
     "node-notifier": "^5.2.1",
     "tough-cookie": "^2.3.4",
     "tough-cookie-filestore": "0.0.1",
